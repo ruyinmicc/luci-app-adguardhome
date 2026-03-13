@@ -157,7 +157,7 @@ _do_redirect()
 {
 	local section="$CONFIGURATION"
 	enabled=$1
-	config_get configpath $CONFIGURATION configpath "/etc/AdGuardHome:AdGuardHome.yaml"
+	config_get configpath $CONFIGURATION configpath "/etc/AdGuardHome/AdGuardHome.yaml"
 	AdGuardHome_PORT=$(config_editor "dns.port" "" "$configpath" "1")
 	if [ -z "$AdGuardHome_PORT" ]; then
 		AdGuardHome_PORT="0"
