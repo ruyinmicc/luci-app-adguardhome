@@ -13,9 +13,9 @@ check_wgetcurl(){
 	# Set User-Agent as curl 8.0.0, otherwise GitHub may return JSON with no line-breaks
 	which wget && downloader="wget -U 'curl/8.0.0' --no-check-certificate -T 20 -O" && return
 	which curl && downloader="curl -L -k --retry 2 --connect-timeout 20 -o" && return
-	[ -z "$1" ] && opkg update || (echo "Failed to run opkg update" && EXIT 1)
-	[ -z "$1" ] && (opkg remove wget wget-nossl --force-depends ; opkg install wget ; check_wgetcurl 1 ;return)
-	[ "$1" == "1" ] && (opkg install curl ; check_wgetcurl 2 ; return)
+	[ -z "$1" ] && apk update || (echo "Failed to run apk update" && EXIT 1)
+	[ -z "$1" ] && (apk del wget wget-nossl ; apk add wget ; check_wgetcurl 1 ;return)
+	[ "$1" == "1" ] && (apk add curl ; check_wgetcurl 2 ; return)
 	echo "Error: curl and wget not found" && EXIT 1
 }
 
@@ -78,7 +78,7 @@ doupx(){
 	upx_latest_ver="$($downloader - https://api.github.com/repos/upx/upx/releases/latest 2>/dev/null|grep -E 'tag_name' |grep -E '[0-9.]+' -o 2>/dev/null)"
 	$downloader /tmp/upx-${upx_latest_ver}-${Arch}_linux.tar.xz "https://github.com/upx/upx/releases/download/v${upx_latest_ver}/upx-${upx_latest_ver}-${Arch}_linux.tar.xz" 2>&1
 	#tar xvJf
-	which xz || (opkg list | grep ^xz || opkg update && opkg install xz) || (echo "Failed to install xz, it's required for installing upx." && EXIT 1)
+	which xz || (apk list -I | grep ^xz || apk update && apk add xz) || (echo "Failed to install xz, it's required for installing upx." && EXIT 1)
 	mkdir -p /tmp/upx-${upx_latest_ver}-${Arch}_linux
 	xz -d -c /tmp/upx-${upx_latest_ver}-${Arch}_linux.tar.xz| tar -x -C "/tmp" >/dev/null 2>&1
 	if [ ! -e "/tmp/upx-${upx_latest_ver}-${Arch}_linux/upx" ]; then
