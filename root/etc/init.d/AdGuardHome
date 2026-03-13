@@ -301,11 +301,11 @@ testbackup(){
 restore()
 {
 	config_get workdir $CONFIGURATION workdir "/usr/bin/AdGuardHome"
-	config_get backupwdpath $CONFIGURATION backupwdpath "/usr/bin/AdGuardHome"
+	config_get backupwdpath $CONFIGURATION backupwdpath "/etc/AdGuardHome"
 	cp -u -r -f $backupwdpath/data $workdir
 }
 backup() {
-	config_get backupwdpath $CONFIGURATION backupwdpath "/usr/bin/AdGuardHome"
+	config_get backupwdpath $CONFIGURATION backupwdpath "/etc/AdGuardHome"
 	mkdir -p $backupwdpath/data
 	config_get workdir $CONFIGURATION workdir "/usr/bin/AdGuardHome"
 	config_get backupfile $CONFIGURATION backupfile ""
@@ -366,7 +366,7 @@ start_service() {
 	# update password
 	config_get username $CONFIGURATION username ""
 	config_get hashpass $CONFIGURATION hashpass ""
-	config_get configpath $CONFIGURATION configpath "/etc/AdGuardHome.yaml"
+	config_get configpath $CONFIGURATION configpath "/etc/AdGuardHome/AdGuardHome.yaml"
 	if [ -n "$username" ]; then
 		config_editor "users.name" "$username" "$configpath"
 		uci set $CONFIGURATION.$CONFIGURATION.username=""
@@ -430,7 +430,7 @@ start_service() {
 		fi
 	fi
 
-	config_get binpath $CONFIGURATION binpath "/usr/bin/AdGuardHome/AdGuardHome"
+	config_get binpath $CONFIGURATION binpath "/usr/bin/AdGuardHome"
 	mkdir -p ${binpath%/*}
 	if [ ! -f "$binpath" ]; then
 		_do_redirect 0
