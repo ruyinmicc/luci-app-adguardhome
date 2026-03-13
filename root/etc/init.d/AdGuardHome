@@ -99,7 +99,7 @@ isrunning(){
 	return $r
 }
 _isrunning(){
-	config_get binpath $CONFIGURATION binpath "/usr/bin/AdGuardHome/AdGuardHome"
+	config_get binpath $CONFIGURATION binpath "/usr/bin/AdGuardHome"
 	[ ! -f "$binpath" ] && return 2
 	pgrep $binpath 2>&1 >/dev/null && return 0
 	return 1
@@ -157,7 +157,7 @@ _do_redirect()
 {
 	local section="$CONFIGURATION"
 	enabled=$1
-	config_get configpath $CONFIGURATION configpath "/etc/AdGuardHome.yaml"
+	config_get configpath $CONFIGURATION configpath "/etc/AdGuardHome:AdGuardHome.yaml"
 	AdGuardHome_PORT=$(config_editor "dns.port" "" "$configpath" "1")
 	if [ -z "$AdGuardHome_PORT" ]; then
 		AdGuardHome_PORT="0"
@@ -300,14 +300,14 @@ testbackup(){
 }
 restore()
 {
-	config_get workdir $CONFIGURATION workdir "/usr/bin/AdGuardHome"
+	config_get workdir $CONFIGURATION workdir "/etc/AdGuardHome"
 	config_get backupwdpath $CONFIGURATION backupwdpath "/etc/AdGuardHome"
 	cp -u -r -f $backupwdpath/data $workdir
 }
 backup() {
 	config_get backupwdpath $CONFIGURATION backupwdpath "/etc/AdGuardHome"
 	mkdir -p $backupwdpath/data
-	config_get workdir $CONFIGURATION workdir "/usr/bin/AdGuardHome"
+	config_get workdir $CONFIGURATION workdir "/etc/AdGuardHome"
 	config_get backupfile $CONFIGURATION backupfile ""
 	for one in $backupfile;
 	do
@@ -385,7 +385,7 @@ start_service() {
 		return
 	fi
 	#what need to do before reload
-	config_get workdir $CONFIGURATION workdir "/usr/bin/AdGuardHome"
+	config_get workdir $CONFIGURATION workdir "/etc/AdGuardHome"
 	grep -q "ipset.txt" $configpath 2>/dev/null && ipst=1
 	if [ $ipst -eq 1 ];then
 		ipset list $GFWSET >/dev/null 2>&1 || ipset create $GFWSET hash:ip 2>/dev/null
